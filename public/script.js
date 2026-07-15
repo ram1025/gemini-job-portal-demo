@@ -14,7 +14,7 @@ document.getElementById('jobForm').addEventListener('submit', async (e) => {
     });
 
     const data = await response.json();
-    
+
     let candidatesHTML = `<p><b>${data.message}</b></p>`;
     if(data.candidates){
       data.candidates.forEach(c => {
