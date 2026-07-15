@@ -1,34 +1,50 @@
 document.getElementById('jobForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const jobTitle = document.getElementById('jobTitle').value;
-  const jobDescription = document.getElementById('jobDescription').value;
+  
+  const title = document.getElementById('jobTitle').value;
+  const description = document.getElementById('jobDescription').value;
   const resultDiv = document.getElementById('result');
+  const button = document.getElementById('submitBtn');
 
-  resultDiv.innerHTML = 'Loading candidates from Gemini...';
+  resultDiv.innerHTML = '<p>Loading candidates from Gemini...</p>';
+  button.disabled = true;
 
   try {
-    const response = await fetch('/api/post-job', {
+    // IMPORTANT: /api/match ani pettam. localhost teesam
+    const response = await fetch('/api/match', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ jobTitle, jobDescription })
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ title, description }),
     });
 
-    const data = await response.json();
-
-    let candidatesHTML = `<p><b>${data.message}</b></p>`;
-    if(data.candidates){
-      data.candidates.forEach(c => {
-        candidatesHTML += `<div style="border:1px solid #ddd; padding:10px; margin:10px 0; border-radius:5px;">
-          <h3>${c.name} - ${c.match} Match</h3>
-          <p><b>Skills:</b> ${c.skills}</p>
-        </div>`
-      })
-    } else {
-      candidatesHTML += `<p style="color:red;">${data.message}</p>`
+    if (!response.ok) {
+      throw new Error('Server error');
     }
-    resultDiv.innerHTML = candidatesHTML;
+
+    const data = await response.json();
+    
+    if (data.candidates && data.candidates.length > 0) {
+      let html = '<h3>Top 3 Candidates from Gemini AI:</h3>';
+      data.candidates.forEach((candidate, index) => {
+        html += `
+          <div style="border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px;">
+            <h4>${index + 1}. ${candidate.name} - ${candidate.match}% Match</h4>
+            <p><b>Skills:</b> ${candidate.skills}</p>
+            <p><b>Why good fit:</b> ${candidate.reason}</p>
+          </div>
+        `;
+      });
+      resultDiv.innerHTML = html;
+    } else {
+      resultDiv.innerHTML = '<p>No candidates found.</p>';
+    }
 
   } catch (error) {
-    resultDiv.innerHTML = `<p style="color:red;">Error: Could not connect to server</p>`
+    console.error('Error:', error);
+    resultDiv.innerHTML = '<p style="color: red;">Error: Could not connect to server</p>';
   }
+
+  button.disabled = false;
 });
