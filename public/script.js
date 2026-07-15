@@ -1,6 +1,6 @@
 document.getElementById('jobForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   const title = document.getElementById('jobTitle').value;
   const description = document.getElementById('jobDescription').value;
   const resultDiv = document.getElementById('result');
@@ -10,7 +10,6 @@ document.getElementById('jobForm').addEventListener('submit', async (e) => {
   button.disabled = true;
 
   try {
-    // IMPORTANT: /api/match ani pettam. localhost teesam
     const response = await fetch('/api/match', {
       method: 'POST',
       headers: {
@@ -24,7 +23,7 @@ document.getElementById('jobForm').addEventListener('submit', async (e) => {
     }
 
     const data = await response.json();
-    
+
     if (data.candidates && data.candidates.length > 0) {
       let html = '<h3>Top 3 Candidates from Gemini AI:</h3>';
       data.candidates.forEach((candidate, index) => {
