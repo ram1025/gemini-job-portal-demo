@@ -9,72 +9,16 @@
 <body class="bg-gray-100 p-10">
   <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
     <h1 class="text-3xl font-bold mb-6">Gemini Job Portal Demo</h1>
-    
     <form id="jobForm">
-      <input 
-        type="text" 
-        id="title" 
-        placeholder="Job Title" 
-        class="w-full p-2 border rounded mb-4"
-        value="Frontend Developer"
-      >
-      <textarea 
-        id="description" 
-        placeholder="Job Description" 
-        rows="4"
-        class="w-full p-2 border rounded mb-4"
-      >Need React, Node.js, Tailwind, 2 years experience</textarea>
-      <button 
-        type="submit"
-        class="w-full bg-blue-500 text-white p-3 rounded font-bold hover:bg-blue-600"
-      >
+      <input type="text" id="title" placeholder="Job Title" class="w-full p-2 border rounded mb-4" value="Frontend Developer">
+      <textarea id="description" placeholder="Job Description" rows="4" class="w-full p-2 border rounded mb-4">
+Need React, Node.js, Tailwind, 2 years experience</textarea>
+      <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded font-bold hover:bg-blue-600">
         Post Job & Get Candidates
       </button>
     </form>
-
     <div id="results" class="mt-6"></div>
   </div>
-
-<script>
-document.getElementById('jobForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const title = document.getElementById('title').value;
-  const description = document.getElementById('description').value;
-  const resultsDiv = document.getElementById('results');
-
-  resultsDiv.innerHTML = '<p>Loading candidates...</p>';
-
-  try {
-    const res = await fetch('/api/match', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, description })
-    });
-    
-    const data = await res.json();
-    
-    if(data.error) {
-      resultsDiv.innerHTML = `<p class="text-red-500">Error: ${data.error}</p>`;
-      return;
-    }
-
-    let html = '<h2 class="text-xl font-bold mb-3">Top 3 Candidates from Gemini AI:</h2>';
-    data.candidates.forEach(c => {
-      html += `
-        <div class="border p-4 rounded mb-3">
-          <h3 class="font-bold">${c.name} - ${c.match}% Match</h3>
-          <p><b>Skills:</b> ${c.skills}</p>
-          <p><b>Reason:</b> ${c.reason}</p>
-        </div>
-      `;
-    });
-    resultsDiv.innerHTML = html;
-
-  } catch(err) {
-    resultsDiv.innerHTML = `<p class="text-red-500">Failed: ${err.message}</p>`;
-  }
-});
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
