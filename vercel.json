@@ -1,5 +1,6 @@
 {
-  "rewrites": [
-    { "source": "/api/match", "destination": "/api/match.js" }
+  "version": 2,
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
